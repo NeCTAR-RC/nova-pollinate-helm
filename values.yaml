@@ -1,0 +1,117 @@
+# Default values for bumblebee.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+conf:
+  OS_DEFAULT__DEBUG: true
+  OS_DEFAULT__PROVIDERS: pollinate.providers.nvidia_vgpu.NvidiaVGPUProvider
+  OS_KEYSTONE_AUTHTOKEN__WWW_AUTHENTICATE_URI: http://keystone:5000/v3
+  OS_KEYSTONE_AUTHTOKEN__AUTH_TYPE: v3password
+  OS_KEYSTONE_AUTHTOKEN__AUTH_URL: http://keystone:5000/v3
+  OS_KEYSTONE_AUTHTOKEN__USERNAME: nova
+  OS_KEYSTONE_AUTHTOKEN__PASSWORD:
+  OS_KEYSTONE_AUTHTOKEN__USER_DOMAIN_NAME: Default
+  OS_KEYSTONE_AUTHTOKEN__PROJECT_NAME: service
+  OS_KEYSTONE_AUTHTOKEN__PROJECT_DOMAIN_NAME: Default
+  OS_SERVICE_AUTH__AUTH_URL: http://keystone:5000/v3
+  OS_SERVICE_AUTH__WWW_AUTHENTICATE_URI: http://keystone:5000/v3
+  OS_SERVICE_AUTH__AUTH_TYPE: password
+  OS_SERVICE_AUTH__USERNAME: nova
+  OS_SERVICE_AUTH__PASSWORD:
+  OS_SERVICE_AUTH__PROJECT_NAME: service
+  OS_SERVICE_AUTH__USER_DOMAIN_NAME: Default
+  OS_SERVICE_AUTH__PROJECT_DOMAIN_NAME: Default
+
+image:
+  repository: registry.rc.nectar.org.au/nectar/nova-pollinate
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+service:
+  type: ClusterIP
+  port: 8612
+
+pdb:
+  enabled: false
+  minAvailable: 0
+
+podAffinityPreset: ""
+podAntiAffinityPreset: soft
+nodeAffinityPreset:
+  type: ""
+  key: ""
+  values: []
+
+replicaCount: 1
+
+vault:
+  role: k8s
+  settings_secret: 'path/to/secret/in/vault'
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

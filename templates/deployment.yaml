@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nova-pollinate.fullname" . }}
+  labels:
+    {{- include "nova-pollinate.labels" . | nindent 4 }}
+    app.kubernetes.io/component: nova-pollinate
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "nova-pollinate.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: nova-pollinate
+  template:
+    metadata:
+      annotations:
+        vault.hashicorp.com/role: "{{ .Values.vault.role }}"
+        vault.hashicorp.com/agent-init-first: "true"
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/agent-inject-status: "update"
+        vault.hashicorp.com/agent-inject-secret-secret_envs: "{{ .Values.vault.settings_secret }}"
+        vault.hashicorp.com/agent-inject-template-secret_envs: |
+          {{ print "{{- with secret \"" .Values.vault.settings_secret "\" -}}" }}
+          {{ print "{{- range $key, $val := .Data.data }}" }}
+          {{ print "export {{ $key }}=\"{{ $val }}\"" }}
+          {{ print "{{- end }}" }}
+          {{ print "{{- end -}}" }}
+      labels:
+        {{- include "nova-pollinate.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: nova-pollinate
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "nova-pollinate.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ['sh', '-c', '. /vault/secrets/secret_envs && /docker-run.sh']
+          envFrom:
+            - configMapRef:
+                name: {{ include "nova-pollinate.fullname" . }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8612
+              scheme: HTTP
+              httpHeaders:
+              - name: Host
+                value: 127.0.0.1
+            timeoutSeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8612
+              scheme: HTTP
+              httpHeaders:
+              - name: Host
+                value: 127.0.0.1
+            initialDelaySeconds: 10
+            timeoutSeconds: 3
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.affinity "context" $) | nindent 8 }}
+      {{- else }}
+      affinity:
+        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.podAffinityPreset "component" "nova-pollinate" "context" $) | nindent 10 }}
+        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.podAntiAffinityPreset "component" "nova-pollinate" "context" $) | nindent 10 }}
+        nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.nodeAffinityPreset.type "key" .Values.nodeAffinityPreset.key "values" .Values.nodeAffinityPreset.values) | nindent 10 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

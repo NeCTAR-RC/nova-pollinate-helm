@@ -1,0 +1,13 @@
+{{- if .Values.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "nova-pollinate.fullname" . }}-nova-pollinate
+  labels:
+    {{- include "nova-pollinate.labels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.pdb.minAvailable | default 0 }}
+  selector:
+    matchLabels:
+      {{- include "nova-pollinate.selectorLabels" . | nindent 6 }}
+{{- end }}

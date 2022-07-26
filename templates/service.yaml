@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "nova-pollinate.fullname" . }}
+  labels:
+    {{- include "nova-pollinate.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 8612
+      protocol: TCP
+  selector:
+    {{- include "nova-pollinate.selectorLabels" . | nindent 4 }}
