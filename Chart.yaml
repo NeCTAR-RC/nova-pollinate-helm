@@ -2,7 +2,7 @@ apiVersion: v2
 name: nova-pollinate
 description: A Helm chart for Nova Pollinate
 type: application
-version: 0.1.7
+version: 0.1.8
 appVersion: f3d72ce
 dependencies:
 - name: common
