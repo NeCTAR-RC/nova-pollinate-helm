@@ -5,6 +5,7 @@
 conf:
   OS_DEFAULT__DEBUG: true
   OS_DEFAULT__PROVIDERS: nvidia_vgpu,windows_product_key
+  OS_VAULT__PATH: k8s/nova-pollinate/secrets
   OS_KEYSTONE_AUTHTOKEN__WWW_AUTHENTICATE_URI: http://keystone:5000/v3
   OS_KEYSTONE_AUTHTOKEN__AUTH_TYPE: v3password
   OS_KEYSTONE_AUTHTOKEN__AUTH_URL: http://keystone:5000/v3

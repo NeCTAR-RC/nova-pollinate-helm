@@ -15,6 +15,19 @@ spec:
       app.kubernetes.io/component: nova-pollinate
   template:
     metadata:
+      annotations:
+        vault.hashicorp.com/role: "{{ .Values.vault.role }}"
+        vault.hashicorp.com/agent-init-first: "true"
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/agent-pre-populate-only: "true"
+        vault.hashicorp.com/agent-inject-status: "update"
+        vault.hashicorp.com/agent-inject-secret-secret_envs: "{{ .Values.vault.settings_secret }}"
+        vault.hashicorp.com/agent-inject-template-secret_envs: |
+          {{ print "{{- with secret \"" .Values.vault.settings_secret "\" -}}" }}
+          {{ print "{{- range $key, $val := .Data.data }}" }}
+          {{ print "export {{ $key }}=\"{{ $val }}\"" }}
+          {{ print "{{- end }}" }}
+          {{ print "{{- end -}}" }}
       labels:
         {{- include "nova-pollinate.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: nova-pollinate
@@ -32,7 +45,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ['/docker-run.sh']
+          command: ['sh', '-c', '. /vault/secrets/secret_envs && /docker-run.sh']
           envFrom:
             - configMapRef:
                 name: {{ include "nova-pollinate.fullname" . }}
