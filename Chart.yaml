@@ -6,7 +6,5 @@ version: 1.1.0
 appVersion: 0.1-5-ga5b65cb
 dependencies:
 - name: common
-  repository: https://charts.bitnami.com/bitnami
-  tags:
-  - bitnami-common
-  version: 2.x
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 2.20.3
