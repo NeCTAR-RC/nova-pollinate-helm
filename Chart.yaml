@@ -7,4 +7,4 @@ appVersion: 0.1-5-ga5b65cb
 dependencies:
 - name: common
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 2.27.0
+  version: 2.27.2
