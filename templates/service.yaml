@@ -6,7 +6,9 @@ metadata:
     {{- include "nova-pollinate.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
+  {{- if ne .Values.service.type "ClusterIP" }}
   externalTrafficPolicy: Local
+  {{- end }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: 8612
