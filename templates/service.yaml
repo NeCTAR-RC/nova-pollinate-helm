@@ -11,7 +11,7 @@ spec:
   {{- end }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: 8612
+      targetPort: http
       protocol: TCP
   selector:
     {{- include "nova-pollinate.selectorLabels" . | nindent 4 }}

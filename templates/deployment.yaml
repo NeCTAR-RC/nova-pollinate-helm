@@ -51,12 +51,12 @@ spec:
                 name: {{ include "nova-pollinate.fullname" . }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /healthcheck
-              port: 8612
+              port: http
               scheme: HTTP
               httpHeaders:
               - name: Host
@@ -68,7 +68,7 @@ spec:
           startupProbe:
             httpGet:
               path: /healthcheck
-              port: 8612
+              port: http
               scheme: HTTP
               httpHeaders:
               - name: Host

@@ -29,7 +29,7 @@ image:
 
 service:
   type: ClusterIP
-  port: 8612
+  port: 80
 
 pdb:
   enabled: false
@@ -73,6 +73,14 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
+
+gateway:
+  enabled: false
+  annotations: {}
+  hostnames:
+    - chart-example.local
+  parentRefs:
+    - name: default
 
 ingress:
   enabled: false
