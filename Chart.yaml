@@ -2,8 +2,8 @@ apiVersion: v2
 name: nova-pollinate
 description: A Helm chart for Nova Pollinate
 type: application
-version: 1.2.7
-appVersion: 0.1-9-g8ecdf97
+version: 1.2.8
+appVersion: 0.1-10-g08b6d41
 dependencies:
 - name: common
   repository: oci://registry-1.docker.io/bitnamicharts
