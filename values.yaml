@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 conf:
-  OS_DEFAULT__DEBUG: true
+  OS_DEFAULT__DEBUG: false
   OS_DEFAULT__PROVIDERS: nvidia_vgpu,windows_product_key
   OS_VAULT__PATH: k8s/nova-pollinate/secrets
   OS_KEYSTONE_AUTHTOKEN__WWW_AUTHENTICATE_URI: http://keystone:5000/v3
