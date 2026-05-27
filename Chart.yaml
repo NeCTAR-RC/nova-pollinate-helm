@@ -6,5 +6,5 @@ version: 1.4.0
 appVersion: 0.1-11-g91f4d27
 dependencies:
 - name: nectarlib
-  version: 4.0.1
+  version: 4.0.2
   repository: oci://registry.rc.nectar.org.au/nectar-helm
