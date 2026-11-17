@@ -2,8 +2,8 @@ apiVersion: v2
 name: nova-pollinate
 description: A Helm chart for Nova Pollinate
 type: application
-version: 1.4.5
-appVersion: 0.2.4
+version: 1.4.6
+appVersion: 0.3.0
 dependencies:
 - name: nectarlib
   version: 4.6.0
